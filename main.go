@@ -96,7 +96,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		log.Printf("level=WARN service=go-app event=invalid_method path=/ method=%s instance=%s", r.Method, instanceID,)
+		log.Printf("level=WARN service=go-app event=invalid_method path=/ method=%s instance=%s", r.Method, instanceID)
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
