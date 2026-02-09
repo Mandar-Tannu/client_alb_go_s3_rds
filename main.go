@@ -26,15 +26,17 @@ func getEnv(key string) string {
 	if val == "" {
 		log.Fatalf("level=FATAL service=go-app error=missing_env_var key=%s", key)
 	}
+	return val
 }
 
 func connectDB(prefix string) *sql.DB {
-	dsn := "host=" + getEnv(prefix+"_HOST")+
-		"port=" + getEnv(prefix+"_PORT")+
-		"user=" + getEnv(prefix+"_USER")+
-		"password=" + getEnv(prefix+"_PASSWORD")+
-		"dbname=" + getEnv(prefix+"_NAME")+
-		"sslmode=" + getEnv(prefix+"_SSLMODE")
+	dsn := "host=" + getEnv(prefix+"_HOST") +
+	" port=" + getEnv(prefix+"_PORT") +
+	" user=" + getEnv(prefix+"_USER") +
+	" password=" + getEnv(prefix+"_PASSWORD") +
+	" dbname=" + getEnv(prefix+"_NAME") +
+	" sslmode=" + getEnv(prefix+"_SSLMODE")
+
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
@@ -77,7 +79,7 @@ func createTable(db *sql.DB){
 
 /* HTTP HANDLERS */
 func healthHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet() {
+	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -94,7 +96,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		log.Printf("level=WARN service=go-app event=invalid_method path=/ method=% instance=%s", r.Method, instanceID)
+		log.Printf("level=WARN service=go-app event=invalid_method path=/ method=%s instance=%s", r.Method, instanceID,)
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
@@ -143,7 +145,7 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("level=INFO service=go-app event=user_created name=%s email=%s phone=%s instance=%s", name, email, phone, instanceID,)
+	log.Printf("level=INFO service=go-app event=user_created name=%s email=%s phone=%s instance=%s", name, email, phone, instanceID)
 	w.Write([]byte("User data stored by instance: "+instanceID))
 }
 
@@ -159,7 +161,7 @@ func uploadToS3(file multipart.File, filename string) (string, string, error) {
 
 	key := "kyc-docs/" + time.Now().Format("20060102-150405") + "-" + filepath.Base(filename)
 
-	_, err = client.PutObject(context.TODO(), &s3.PubObjectInput{
+	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket: aws.String(bucket),
 		Key: aws.String(key),
 		Body: file,
