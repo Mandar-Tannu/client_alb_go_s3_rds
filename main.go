@@ -126,8 +126,9 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 
 	bucket, key, err := uploadToS3(file, header.Filename)
 	if err != nil {
-		http.Error(w, "Failed to upload document to S3", http.StatusInternalServerError)
-		return
+    	log.Printf("level=ERROR service=go-app event=s3_upload_failed err=%v instance=%s", err, instanceID)
+    	http.Error(w, "Failed to upload document to S3", http.StatusInternalServerError)
+    	return
 	}
 
 	name := r.FormValue("name")
