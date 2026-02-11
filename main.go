@@ -153,7 +153,10 @@ func submitHandler(w http.ResponseWriter, r *http.Request) {
 func uploadToS3(file multipart.File, filename string) (string, string, error) {
 	bucket := getEnv("S3_BUCKET_NAME")
 
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := config.LoadDefaultConfig(
+    context.TODO(),
+    config.WithRegion("ap-south-1"),
+	)
 	if err != nil {
 		return "", "", err
 	}
